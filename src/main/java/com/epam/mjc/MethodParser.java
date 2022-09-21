@@ -43,7 +43,6 @@ public class MethodParser {
                 current.add(temp);
             }
         }
-
         MethodSignature checkMethod = new MethodSignature("currentMethod", current);
         for (String names : firstPart) {
             if (modifiers.contains(names)) {
@@ -54,7 +53,6 @@ public class MethodParser {
                 checkMethod.setMethodName(names);
             }
         }
-
         return checkMethod;
 
     }
