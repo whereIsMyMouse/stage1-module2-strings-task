@@ -30,40 +30,31 @@ public class MethodParser {
         StringTokenizer st = new StringTokenizer(signatureString, "(.)");
 
         String[] firstPart = st.nextToken().split(" ");
-        String nameAccess = new String();
-        String nameReturn = new String();
-        String nameOfMethod = new String();
 
-        for (String names : firstPart) {
-            if (Arrays.asList(modifiers).contains(names)) {
-                nameAccess = names;
-            } else if (Arrays.asList(returnTypes).contains(names)) {
-                nameReturn = names;
-            } else {
-                nameOfMethod = names;
-            }
-        }
         List<MethodSignature.Argument> current = new ArrayList<>();
         if (st.hasMoreTokens()) {
-            String[] secondPart = st.nextToken().split(",");
-            for (String typo : secondPart) {
-                String[] typos = typo.split(" ");
-                MethodSignature.Argument temp = new MethodSignature.Argument(typos[0], typos[1]);
+            StringTokenizer st2 = new StringTokenizer(st.nextToken(),",");
+            while (st2.hasMoreTokens()){
+
+                String[] currentPart = st2.nextToken().split(" ");
+                MethodSignature.Argument temp = currentPart.length == 2?
+                        new MethodSignature.Argument(currentPart[0], currentPart[1]) :
+                        new MethodSignature.Argument(currentPart[1], currentPart[2]);
                 current.add(temp);
             }
         }
-        MethodSignature checkMethod = new MethodSignature(nameOfMethod, current);
-        if (nameAccess.length() > 0) {
-            checkMethod.setAccessModifier(nameAccess);
-        } else {
-            checkMethod.setAccessModifier(null);
+
+        MethodSignature checkMethod = new MethodSignature("currentMethod", current);
+        for (String names : firstPart) {
+            if (modifiers.contains(names)) {
+                checkMethod.setAccessModifier(names);
+            } else if (returnTypes.contains(names)) {
+                checkMethod.setReturnType(names);
+            } else {
+                checkMethod.setMethodName(names);
+            }
         }
-        if (nameReturn.length() > 0) {
-            checkMethod.setReturnType(nameReturn);
-        } else {
-            checkMethod.setReturnType(null);
-        }
-        checkMethod.setMethodName(nameOfMethod);
+
         return checkMethod;
 
     }
